@@ -1,0 +1,125 @@
+@model IEnumerable<MVC2cStore.Data.Log>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+@section styles {
+    <style>
+        .log-debug
+        {
+            background-color: rgba(0, 255, 0, .1) !important;
+        }
+
+        .log-info
+        {
+            background-color: rgba(0, 0, 255, .2) !important;
+        }
+
+        .log-warn
+        {
+            background-color: rgba(255, 255, 0, .3) !important;
+            font-style: italic !important;
+        }
+
+        .log-error
+        {
+            background-color: rgba(255, 106, 0, .4) !important;
+            font-weight: bold !important;
+        }
+
+        .log-fatal
+        {
+            background-color: rgba(255, 0, 0, .5) !important;
+            font-weight: bold !important;
+        }
+    </style>
+}
+
+<h2>Index</h2>
+
+<table class="table" id="LogsTable">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Date)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Level)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Logger)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Message)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr class="log-@item.Level.ToLower()" id="log-@item.ID">
+                <td>
+                    @Html.DisplayFor(modelItem => item.Date)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Level)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Logger)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Message)
+                </td>
+                <td>
+                    <a href="" class="DetailsLink" id="@item.ID">Details</a> |
+
+                    @Ajax.ActionLink("Delete", "AjaxDelete", "Logs", new { id = item.ID },
+                    new AjaxOptions
+                    {
+                        HttpMethod = "POST",
+                        Confirm = "Are you sure you want to delete the log " + @item.Message + "?",
+                        OnSuccess = "deleteConfirmed"
+                    })
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<div id="LogDetails"></div>
+
+@section scripts {
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#LogsTable').DataTable();
+        });
+
+        // ***** AJAX DELETE CONFIRMATION ***** //
+        function deleteConfirmed(response, status, data) {
+            // remove the row from the table
+            var rowId = "#log-" + response.id;
+            $('#LogsTable').find(rowId).remove();
+            // display a status message
+            $('#MessageContent').html("<div class='alert alert-success'>" + response.message + "</div>");
+        }
+
+        // ***** SHOW DETAILS DIALOG BOX ***** //
+        $('a.DetailsLink').click(function (e) {
+            e.preventDefault();
+            $("#LogDetails").data('pId', $(this).attr('id')).dialog({
+                modal: true,
+                open: function () {
+                    var data = $(this).data('pId');
+                    $(this).load("/Logs/LogDetails/" + data);
+                },
+                width: 700,
+                height: 500,
+                title: "Log Details",
+                resizable: false
+            });
+        });
+
+    </script>
+}
