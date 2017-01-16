@@ -1,14 +1,23 @@
 # ASPNET-MVC-Log4Net-UI
-1. Add primary key to the Logs table in the database
 
-2. Add Logs table to the EDMX file
+----
+## Setup
+1. Run the CreateLogsTable.sql to create the database table
 
-3. Add LogsController.cs to the controller folder
-Create a Logs folder under the Views folder
-Add Index.cshtml and LogDetails.cshtml to the Logs folder under views
+2. Install Log4Net and configure it to write logs to the database
 
-4. Update the model namespace at the top of the .cshtml files and the top of the controller
+    * https://www.nuget.org/packages/log4net/
 
+3. Add Logs table to the EDMX file
+
+4. Add LogsController.cs to the controller folder
+
+    * Create a Logs folder under the Views folder
+    * Add Index.cshtml and LogDetails.cshtml to the Logs folder under views
+
+5. Update the model namespace at the top of the .cshtml files and the top of the controller
+
+----
 ## Required CSS & JS
 Add the following CSS and JS files to the view or shared layout
 
@@ -40,7 +49,8 @@ Add the following CSS and JS files to the view or shared layout
 
 	<script src="https://cdn.datatables.net/1.10.13/js/dataTables.bootstrap.min.js"></script>
 	
+----
 ## Repository and Unit of Work
 The UI is also set up to use the Repository and Unit of Work patterns
 
-https://www.asp.net/mvc/overview/older-versions/getting-started-with-ef-5-using-mvc-4/implementing-the-repository-and-unit-of-work-patterns-in-an-asp-net-mvc-application
+[Implementing the Repository and Unit of Work Patterns in an ASP.NET MVC Application by Tom Dykstra] (https://www.asp.net/mvc/overview/older-versions/getting-started-with-ef-5-using-mvc-4/implementing-the-repository-and-unit-of-work-patterns-in-an-asp-net-mvc-application)
