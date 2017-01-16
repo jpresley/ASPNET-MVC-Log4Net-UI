@@ -39,3 +39,8 @@ Add the following CSS and JS files to the view or shared layout
 5. DataTables.NET Bootstrap
 
 	<script src="https://cdn.datatables.net/1.10.13/js/dataTables.bootstrap.min.js"></script>
+	
+## Repository and Unit of Work
+The UI is also set up to use the Repository and Unit of Work patterns
+
+https://www.asp.net/mvc/overview/older-versions/getting-started-with-ef-5-using-mvc-4/implementing-the-repository-and-unit-of-work-patterns-in-an-asp-net-mvc-application
