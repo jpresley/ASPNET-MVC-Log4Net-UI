@@ -1,10 +1,16 @@
-@model IEnumerable<MVC2cStore.Data.Log>
-
+@model IEnumerable<CreativityJungle.Log>
 @{
-    ViewBag.Title = "Index";
+    Layout = null;
 }
-
-@section styles {
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - My ASP.NET Application</title>
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
+    <link rel="stylesheet" href="//cdn.datatables.net/1.10.13/css/jquery.dataTables.min.css" />
     <style>
         .log-debug
         {
@@ -34,92 +40,112 @@
             font-weight: bold !important;
         }
     </style>
-}
+</head>
+<body>
+    <div class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                @Html.ActionLink("Log4Net Reader by Creativity Jungle", "Index", "Home", null, new { @class = "navbar-brand" })
+            </div>
+        </div>
+    </div>
+    <div class="container body-content">
+        <h2>Index</h2>
 
-<h2>Index</h2>
+        <div id="MessageContent"></div>
 
-<table class="table" id="LogsTable">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Date)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Level)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Logger)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Message)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr class="log-@item.Level.ToLower()" id="log-@item.ID">
-                <td>
-                    @Html.DisplayFor(modelItem => item.Date)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Level)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Logger)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Message)
-                </td>
-                <td>
-                    <a href="" class="DetailsLink" id="@item.ID">Details</a> |
+        <table class="table" id="LogsTable">
+            <thead>
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Date)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Thread)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Level)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Logger)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Message)
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
 
-                    @Ajax.ActionLink("Delete", "AjaxDelete", "Logs", new { id = item.ID },
+                @foreach (var item in Model)
+                {
+                    <tr class="log-@item.Level.ToLower()" id="log-@item.ID">
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Date)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Thread)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Level)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Logger)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Message)
+                        </td>
+                        <td>
+                            <a href="" class="DetailsLink" id="@item.ID">Details</a> |
+
+                            @Ajax.ActionLink("Delete", "AjaxDelete", "Logs", new { id = item.ID },
                     new AjaxOptions
                     {
                         HttpMethod = "POST",
                         Confirm = "Are you sure you want to delete the log " + @item.Message + "?",
                         OnSuccess = "deleteConfirmed"
                     })
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
 
-<div id="LogDetails"></div>
+        <div id="LogDetails"></div>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/jquery.ajax.unobtrusive/3.2.4/jquery.unobtrusive-ajax.min.js"></script>
+        <script src="//cdn.datatables.net/1.10.13/js/jquery.dataTables.min.js"></script>
 
-@section scripts {
-    <script type="text/javascript">
-        $(document).ready(function () {
-            $('#LogsTable').DataTable();
-        });
-
-        // ***** AJAX DELETE CONFIRMATION ***** //
-        function deleteConfirmed(response, status, data) {
-            // remove the row from the table
-            var rowId = "#log-" + response.id;
-            $('#LogsTable').find(rowId).remove();
-            // display a status message
-            $('#MessageContent').html("<div class='alert alert-success'>" + response.message + "</div>");
-        }
-
-        // ***** SHOW DETAILS DIALOG BOX ***** //
-        $('a.DetailsLink').click(function (e) {
-            e.preventDefault();
-            $("#LogDetails").data('pId', $(this).attr('id')).dialog({
-                modal: true,
-                open: function () {
-                    var data = $(this).data('pId');
-                    $(this).load("/Logs/LogDetails/" + data);
-                },
-                width: 700,
-                height: 500,
-                title: "Log Details",
-                resizable: false
+        <script type="text/javascript">
+            $(document).ready(function () {
+                $('#LogsTable').DataTable();
             });
-        });
 
-    </script>
-}
+            // ***** AJAX DELETE CONFIRMATION ***** //
+            function deleteConfirmed(response, status, data) {
+                // remove the row from the table
+                var rowId = "#log-" + response.id;
+                $('#LogsTable').find(rowId).remove();
+                // display a status message
+                $('#MessageContent').html("<div class='alert alert-success'>" + response.message + "</div>");
+            }
+
+            // ***** SHOW DETAILS DIALOG BOX ***** //
+            $('a.DetailsLink').click(function (e) {
+                e.preventDefault();
+                $("#LogDetails").data('pId', $(this).attr('id')).dialog({
+                    modal: true,
+                    open: function () {
+                        var data = $(this).data('pId');
+                        $(this).load("/Logs/LogDetails/" + data);
+                    },
+                    width: 700,
+                    height: 500,
+                    title: "Log Details",
+                    resizable: false
+                });
+            });
+        </script>
+</body>
+</html>
